@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ComFormation — Formulaire d'inscription</title>
+<style>
+  /* ===== Palette et typographie =====
+     Bleu nuit (confiance/institution) + or discret (formation/valeur)
+     Police display : Georgia (dispo partout, pas besoin de Google Fonts,
+     donc ça marche même hors-ligne / sans CDN externe) */
+  :root{
+    --bleu-nuit:#0f2340;
+    --bleu-nuit-clair:#1c3b63;
+    --or:#c9a24b;
+    --or-clair:#e0c274;
+    --fond:#f6f4ef;
+    --carte:#ffffff;
+    --texte:#1e2430;
+    --texte-doux:#5b6472;
+    --erreur:#b3261e;
+    --whatsapp:#25d366;
+    --radius:10px;
+    --ombre:0 10px 30px rgba(15,35,64,0.12);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family: Georgia, 'Times New Roman', serif;
+    background:var(--fond);
+    color:var(--texte);
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:32px 16px;
+  }
+
+  .conteneur{
+    width:100%;
+    max-width:560px;
+  }
+
+  /* ===== En-tête / identité du centre ===== */
+  .entete{
+    text-align:center;
+    margin-bottom:24px;
+  }
+  .entete .logo{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:56px;height:56px;
+    border-radius:50%;
+    background:var(--bleu-nuit);
+    color:var(--or-clair);
+    font-weight:bold;
+    font-size:22px;
+    margin-bottom:12px;
+    font-family: Arial, sans-serif;
+  }
+  .entete h1{
+    margin:0 0 4px 0;
+    font-size:28px;
+    color:var(--bleu-nuit);
+    letter-spacing:0.5px;
+  }
+  .entete p{
+    margin:0;
+    color:var(--texte-doux);
+    font-family: Arial, sans-serif;
+    font-size:14px;
+  }
+
+  /* ===== Carte du formulaire ===== */
+  .carte{
+    background:var(--carte);
+    border-radius:var(--radius);
+    box-shadow:var(--ombre);
+    padding:32px 28px;
+    border-top:4px solid var(--or);
+  }
+
+  .champ{
+    margin-bottom:20px;
+  }
+  label{
+    display:block;
+    font-family: Arial, sans-serif;
+    font-size:13px;
+    font-weight:bold;
+    color:var(--bleu-nuit);
+    margin-bottom:6px;
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+  }
+  input[type="text"],
+  input[type="tel"],
+  select,
+  textarea{
+    width:100%;
+    padding:12px 14px;
+    border:1.5px solid #d8d3c4;
+    border-radius:8px;
+    font-family: Arial, sans-serif;
+    font-size:15px;
+    color:var(--texte);
+    background:#fdfcfa;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  input:focus, select:focus, textarea:focus{
+    outline:none;
+    border-color:var(--or);
+    box-shadow:0 0 0 3px rgba(201,162,75,0.25);
+  }
+  textarea{ resize:vertical; min-height:90px; }
+
+  .erreur-msg{
+    color:var(--erreur);
+    font-size:12.5px;
+    font-family: Arial, sans-serif;
+    margin-top:5px;
+    display:none;
+  }
+  .champ.invalide input,
+  .champ.invalide select{
+    border-color:var(--erreur);
+  }
+  .champ.invalide .erreur-msg{ display:block; }
+
+  .bouton-principal{
+    width:100%;
+    padding:14px;
+    background:var(--bleu-nuit);
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    font-family: Arial, sans-serif;
+    font-size:16px;
+    font-weight:bold;
+    letter-spacing:0.3px;
+    cursor:pointer;
+    transition: background 0.15s ease, transform 0.05s ease;
+  }
+  .bouton-principal:hover{ background:var(--bleu-nuit-clair); }
+  .bouton-principal:active{ transform:scale(0.99); }
+  .bouton-principal:disabled{ opacity:0.6; cursor:not-allowed; }
+
+  /* ===== Écran de confirmation (après envoi) ===== */
+  .confirmation{
+    display:none;
+    text-align:center;
+    padding:8px 4px;
+  }
+  .confirmation .coche{
+    width:64px;height:64px;
+    border-radius:50%;
+    background:#e7f4ea;
+    color:#2e7d32;
+    display:flex;align-items:center;justify-content:center;
+    font-size:32px;
+    margin:0 auto 16px auto;
+    font-family: Arial, sans-serif;
+  }
+  .confirmation h2{
+    color:var(--bleu-nuit);
+    margin-bottom:8px;
+  }
+  .confirmation p{
+    color:var(--texte-doux);
+    font-family: Arial, sans-serif;
+    font-size:14.5px;
+    margin-bottom:24px;
+    line-height:1.5;
+  }
+  .action-whatsapp{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:100%;
+    padding:14px;
+    background:var(--whatsapp);
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    font-family: Arial, sans-serif;
+    font-size:15.5px;
+    font-weight:bold;
+    text-decoration:none;
+    margin-bottom:12px;
+  }
+  .action-retour{
+    display:inline-block;
+    width:100%;
+    padding:13px;
+    background:transparent;
+    color:var(--bleu-nuit);
+    border:1.5px solid var(--bleu-nuit);
+    border-radius:8px;
+    font-family: Arial, sans-serif;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    text-align:center;
+  }
+  .action-retour:hover{ background:#eef1f5; }
+
+  .pied{
+    text-align:center;
+    margin-top:18px;
+    font-family: Arial, sans-serif;
+    font-size:12px;
+    color:var(--texte-doux);
+  }
+
+  /* ===== Responsive mobile ===== */
+  @media (max-width:480px){
+    .carte{ padding:24px 18px; }
+    .entete h1{ font-size:24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="conteneur">
+
+  <!-- ===== En-tête avec le nom du centre ===== -->
+  <div class="entete">
+    <div class="logo">CF</div>
+    <h1>ComFormation</h1>
+    <p>Formulaire d'inscription aux formations</p>
+  </div>
+
+  <div class="carte">
+
+    <!-- ===== FORMULAIRE ===== -->
+    <form id="formulaire-inscription" novalidate>
+
+      <div class="champ" id="champ-nom">
+        <label for="nom">Nom et prénom</label>
+        <input type="text" id="nom" name="nom" placeholder="Ex : Fatima Ali" autocomplete="name">
+        <div class="erreur-msg">Merci d'indiquer votre nom et prénom.</div>
+      </div>
+
+      <div class="champ" id="champ-contact">
+        <label for="contact">Contact (téléphone ou email)</label>
+        <input type="text" id="contact" name="contact" placeholder="Ex : +269 xxx xxxx" autocomplete="tel">
+        <div class="erreur-msg">Merci d'indiquer un contact valide.</div>
+      </div>
+
+      <div class="champ" id="champ-profession">
+        <label for="profession">Profession</label>
+        <select id="profession" name="profession">
+          <option value="" disabled selected>Sélectionnez votre profession</option>
+          <option value="Etudiant">Étudiant</option>
+          <option value="Salarie">Salarié</option>
+          <option value="Entrepreneur">Entrepreneur</option>
+          <option value="Autre">Autre</option>
+        </select>
+        <div class="erreur-msg">Merci de sélectionner une profession.</div>
+      </div>
+
+      <div class="champ" id="champ-formation">
+        <label for="formation">Formation souhaitée</label>
+        <select id="formation" name="formation">
+          <option value="" disabled selected>Sélectionnez une formation</option>
+          <option value="Excel de gestion">Excel de gestion</option>
+          <option value="Informatique bureautique">Informatique bureautique</option>
+          <option value="Business plan financier">Business plan financier</option>
+        </select>
+        <div class="erreur-msg">Merci de sélectionner une formation.</div>
+      </div>
+
+      <div class="champ">
+        <label for="commentaire">Commentaire (facultatif)</label>
+        <textarea id="commentaire" name="commentaire" placeholder="Une question, une précision..."></textarea>
+      </div>
+
+      <button type="submit" class="bouton-principal" id="bouton-envoyer">Envoyer mon inscription</button>
+    </form>
+
+    <!-- ===== ÉCRAN DE CONFIRMATION (masqué au départ) ===== -->
+    <div class="confirmation" id="ecran-confirmation">
+      <div class="coche">✓</div>
+      <h2>Inscription envoyée !</h2>
+      <p>Merci, votre inscription a bien été enregistrée. Pour toute question ou pour finaliser votre dossier, vous pouvez nous écrire directement sur WhatsApp.</p>
+
+      <!-- Bouton WhatsApp : ouvre une conversation directe avec le numéro du centre -->
+      <a href="https://wa.me/2694096958" target="_blank" rel="noopener" class="action-whatsapp">
+        💬 Nous écrire sur WhatsApp
+      </a>
+
+      <!-- Bouton retour : réaffiche le formulaire vide pour une nouvelle inscription -->
+      <button type="button" class="action-retour" id="bouton-retour">Retour au formulaire</button>
+    </div>
+
+  </div>
+
+  <p class="pied">ComFormation — vos données sont utilisées uniquement pour le traitement de votre inscription.</p>
+</div>
+
+<script>
+  /* =========================================================================
+     CONFIGURATION À FAIRE AVANT UTILISATION
+     -------------------------------------------------------------------------
+     Remplacer l'URL ci-dessous par l'URL de TON déploiement Google Apps Script
+     (voir les instructions fournies séparément pour créer ce script dans le
+     Google Sheet). Sans cette URL correcte, le formulaire ne pourra pas
+     envoyer les données vers la feuille.
+  ========================================================================= */
+  const URL_SCRIPT_GOOGLE = "https://script.google.com/macros/s/AKfycbxgikyVUgiHhnZi8y_Oz9_vcgucKNAWCKEoKMVSIJ3bvcwjWNaj13mssxAPa-DywlJR/exec";
+
+  const formulaire   = document.getElementById('formulaire-inscription');
+  const boutonEnvoyer = document.getElementById('bouton-envoyer');
+  const ecranConfirmation = document.getElementById('ecran-confirmation');
+  const boutonRetour = document.getElementById('bouton-retour');
+
+  // Petite fonction utilitaire pour afficher/masquer un message d'erreur sur un champ
+  function marquerErreur(idChamp, estInvalide){
+    const champ = document.getElementById(idChamp);
+    if(estInvalide){
+      champ.classList.add('invalide');
+    } else {
+      champ.classList.remove('invalide');
+    }
+  }
+
+  // Validation simple côté client avant envoi
+  function validerFormulaire(donnees){
+    let valide = true;
+
+    if(!donnees.nom.trim()){
+      marquerErreur('champ-nom', true);
+      valide = false;
+    } else { marquerErreur('champ-nom', false); }
+
+    if(!donnees.contact.trim()){
+      marquerErreur('champ-contact', true);
+      valide = false;
+    } else { marquerErreur('champ-contact', false); }
+
+    if(!donnees.profession){
+      marquerErreur('champ-profession', true);
+      valide = false;
+    } else { marquerErreur('champ-profession', false); }
+
+    if(!donnees.formation){
+      marquerErreur('champ-formation', true);
+      valide = false;
+    } else { marquerErreur('champ-formation', false); }
+
+    return valide;
+  }
+
+  formulaire.addEventListener('submit', async function(evenement){
+    evenement.preventDefault();
+
+    // On récupère les valeurs saisies
+    const donnees = {
+      nom: document.getElementById('nom').value,
+      contact: document.getElementById('contact').value,
+      profession: document.getElementById('profession').value,
+      formation: document.getElementById('formation').value,
+      commentaire: document.getElementById('commentaire').value,
+      dateEnvoi: new Date().toISOString()
+    };
+
+    if(!validerFormulaire(donnees)){
+      return; // On arrête si le formulaire n'est pas valide
+    }
+
+    boutonEnvoyer.disabled = true;
+    boutonEnvoyer.textContent = "Envoi en cours...";
+
+    try{
+      // Envoi des données vers le script Google Apps Script relié au Sheet.
+      // mode 'no-cors' : Apps Script ne renvoie pas d'en-têtes CORS lisibles,
+      // donc on ne peut pas lire la réponse — mais l'écriture dans la feuille
+      // se fait bien côté serveur. On considère l'envoi réussi si aucune
+      // exception réseau n'est levée.
+      await fetch(URL_SCRIPT_GOOGLE, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(donnees)
+      });
+
+      // Affichage de l'écran de confirmation + boutons WhatsApp / retour
+      formulaire.style.display = 'none';
+      ecranConfirmation.style.display = 'block';
+
+    } catch(erreur){
+      alert("L'envoi a échoué. Vérifiez votre connexion internet et réessayez.");
+      console.error("Erreur d'envoi vers Google Sheets :", erreur);
+    } finally {
+      boutonEnvoyer.disabled = false;
+      boutonEnvoyer.textContent = "Envoyer mon inscription";
+    }
+  });
+
+  // Bouton "Retour au formulaire" : on réaffiche un formulaire vide
+  boutonRetour.addEventListener('click', function(){
+    formulaire.reset();
+    ecranConfirmation.style.display = 'none';
+    formulaire.style.display = 'block';
+    // On nettoie les éventuels messages d'erreur restants
+    document.querySelectorAll('.champ.invalide').forEach(function(champ){
+      champ.classList.remove('invalide');
+    });
+  });
+</script>
+
+</body>
+</html>
