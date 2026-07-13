@@ -273,6 +273,17 @@
         <div class="erreur-msg">Merci de sélectionner une formation.</div>
       </div>
 
+      <div class="champ" id="champ-heure">
+        <label for="heure">Heure disponible</label>
+        <select id="heure" name="heure">
+          <option value="" disabled selected>Sélectionnez un créneau</option>
+          <option value="A partir 8h">À partir de 8h</option>
+          <option value="A partir 12h">À partir de 12h</option>
+          <option value="A partir 18h">À partir de 18h</option>
+        </select>
+        <div class="erreur-msg">Merci de sélectionner un créneau.</div>
+      </div>
+
       <div class="champ">
         <label for="commentaire">Commentaire (facultatif)</label>
         <textarea id="commentaire" name="commentaire" placeholder="Une question, une précision..."></textarea>
@@ -351,6 +362,11 @@
       valide = false;
     } else { marquerErreur('champ-formation', false); }
 
+    if(!donnees.heure){
+      marquerErreur('champ-heure', true);
+      valide = false;
+    } else { marquerErreur('champ-heure', false); }
+
     return valide;
   }
 
@@ -363,6 +379,7 @@
       contact: document.getElementById('contact').value,
       profession: document.getElementById('profession').value,
       formation: document.getElementById('formation').value,
+      heure: document.getElementById('heure').value,
       commentaire: document.getElementById('commentaire').value,
       dateEnvoi: new Date().toISOString()
     };
